@@ -1,0 +1,161 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Physics Simulations — GCE O/N Level</title>
+<style>
+* { box-sizing: border-box; margin: 0; padding: 0; }
+body {
+  font-family: 'Segoe UI', Tahoma, sans-serif;
+  background: #0f172a;
+  color: #e2e8f0;
+  min-height: 100vh;
+  padding: 40px 20px;
+}
+.header {
+  text-align: center;
+  margin-bottom: 48px;
+}
+.header h1 {
+  font-size: 2rem;
+  color: #93c5fd;
+  letter-spacing: -0.02em;
+  margin-bottom: 8px;
+}
+.header p {
+  color: #64748b;
+  font-size: 0.95rem;
+}
+.header .badge {
+  display: inline-block;
+  background: #1e3a5f;
+  color: #60a5fa;
+  font-size: 0.75rem;
+  padding: 3px 10px;
+  border-radius: 20px;
+  margin-top: 8px;
+  letter-spacing: 0.05em;
+}
+
+.grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  gap: 20px;
+  max-width: 1100px;
+  margin: 0 auto;
+}
+
+.card {
+  background: #1e293b;
+  border-radius: 16px;
+  padding: 28px 24px;
+  text-decoration: none;
+  color: inherit;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  border: 1px solid #1e293b;
+  transition: border-color 0.2s, transform 0.15s;
+  position: relative;
+  overflow: hidden;
+}
+.card:hover {
+  border-color: var(--accent);
+  transform: translateY(-3px);
+}
+.card .icon { font-size: 2.4rem; }
+.card h2 { font-size: 1.1rem; color: var(--accent); }
+.card p { font-size: 0.85rem; color: #94a3b8; line-height: 1.5; }
+.card .topics { font-size: 0.75rem; color: #475569; margin-top: 4px; }
+.card .status {
+  display: inline-block;
+  font-size: 0.72rem;
+  padding: 2px 9px;
+  border-radius: 20px;
+  margin-top: auto;
+  align-self: flex-start;
+  font-weight: 600;
+}
+.status-ready { background: #14532d; color: #4ade80; }
+.status-soon  { background: #1e293b; color: #475569; border: 1px solid #334155; }
+
+/* colour accents per card */
+.card-electricity { --accent: #fbbf24; }
+.card-circuits    { --accent: #60a5fa; }
+.card-kinematics  { --accent: #34d399; }
+.card-waves       { --accent: #f472b6; }
+
+.section-label {
+  max-width: 1100px;
+  margin: 0 auto 16px auto;
+  font-size: 0.78rem;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  color: #475569;
+}
+
+footer {
+  text-align: center;
+  margin-top: 60px;
+  color: #334155;
+  font-size: 0.8rem;
+}
+</style>
+</head>
+<body>
+
+<div class="header">
+  <h1>⚡ Physics Interactive Simulations</h1>
+  <p>Singapore GCE O Level &amp; N Level Physics</p>
+  <div class="badge">Click any simulation to launch it</div>
+</div>
+
+<div class="section-label">Electricity &amp; Magnetism</div>
+<div class="grid">
+
+  <a href="ohms_law/index.html" class="card card-electricity">
+    <div class="icon">💧</div>
+    <h2>Ohm's Law — Water Analogy</h2>
+    <p>Drag sliders to change voltage and resistance. Watch how current changes in real time using the water pipe analogy.</p>
+    <div class="topics">Topics: Current Electricity · D.C. Circuits · Ohm's Law</div>
+    <span class="status status-ready">✓ Ready</span>
+  </a>
+
+  <a href="circuits/index.html" class="card card-circuits">
+    <div class="icon">🔌</div>
+    <h2>Series &amp; Parallel Circuits</h2>
+    <p>Build circuits with resistors in series or parallel. See how total resistance, current and voltage change.</p>
+    <div class="topics">Topics: D.C. Circuits · Practical Electricity</div>
+    <span class="status status-soon">Coming soon</span>
+  </a>
+
+</div>
+
+<div class="section-label" style="margin-top:32px">Mechanics &amp; Motion</div>
+<div class="grid">
+
+  <a href="kinematics/index.html" class="card card-kinematics">
+    <div class="icon">📈</div>
+    <h2>Kinematics Graphs</h2>
+    <p>Interactive distance-time and speed-time graphs. Adjust motion parameters and see how the graphs respond.</p>
+    <div class="topics">Topics: Kinematics · Dynamics</div>
+    <span class="status status-soon">Coming soon</span>
+  </a>
+
+  <a href="waves/index.html" class="card card-waves">
+    <div class="icon">〰️</div>
+    <h2>Wave Properties</h2>
+    <p>Visualise how frequency, wavelength and wave speed relate. Compare transverse and longitudinal waves.</p>
+    <div class="topics">Topics: General Wave Properties · Sound · Light</div>
+    <span class="status status-soon">Coming soon</span>
+  </a>
+
+</div>
+
+<footer>
+  GCE O Level Physics · Singapore MOE Syllabus · For classroom and self-study use
+</footer>
+
+</body>
+</html>
