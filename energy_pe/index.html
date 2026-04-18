@@ -1,0 +1,507 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Battery as an Active Pusher — Mountain &amp; Pump Analogy</title>
+<style>
+* { box-sizing: border-box; margin: 0; padding: 0; }
+body {
+  font-family: 'Segoe UI', Tahoma, sans-serif;
+  background: #0f172a;
+  color: #e2e8f0;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 16px 12px;
+  gap: 12px;
+}
+h1 { font-size: 1.45rem; color: #93c5fd; letter-spacing: -0.02em; text-align: center; }
+.subtitle { font-size: 0.85rem; color: #64748b; text-align: center; }
+
+canvas { border-radius: 14px; background: #1e293b; display: block; }
+
+.controls { display: flex; gap: 12px; width: 860px; }
+.card {
+  background: #1e293b; border-radius: 12px;
+  padding: 13px 16px; flex: 1;
+}
+.card h3 { font-size: 0.72rem; text-transform: uppercase; letter-spacing: .08em; margin-bottom: 5px; }
+.card .big { font-size: 2rem; font-weight: 700; line-height: 1; }
+.card .sub { font-size: 0.76rem; color: #64748b; margin-top: 3px; }
+
+input[type=range] {
+  width: 100%; margin-top: 9px; cursor: pointer;
+  -webkit-appearance: none; height: 6px; border-radius: 3px; outline: none;
+}
+.v-card { border-top: 3px solid #f59e0b; }
+.v-card h3 { color: #f59e0b; } .v-card .big { color: #fbbf24; }
+input.vs { background: #78350f55; }
+input.vs::-webkit-slider-thumb { -webkit-appearance:none;width:18px;height:18px;border-radius:50%;background:#f59e0b;cursor:pointer; }
+
+.r-card { border-top: 3px solid #a78bfa; }
+.r-card h3 { color: #a78bfa; } .r-card .big { color: #c4b5fd; }
+input.rs { background: #4c1d9555; }
+input.rs::-webkit-slider-thumb { -webkit-appearance:none;width:18px;height:18px;border-radius:50%;background:#a78bfa;cursor:pointer; }
+
+.i-card { border-top: 3px solid #34d399; }
+.i-card h3 { color: #34d399; } .i-card .big { color: #6ee7b7; }
+
+.p-card { border-top: 3px solid #fb923c; }
+.p-card h3 { color: #fb923c; } .p-card .big { color: #fdba74; }
+
+.keybox {
+  background: #1e293b; border-radius: 12px;
+  padding: 13px 22px; width: 860px;
+  display: flex; gap: 28px; align-items: flex-start; flex-wrap: wrap;
+}
+.keybox h3 { font-size: 0.72rem; text-transform: uppercase; letter-spacing:.08em; color:#475569; margin-bottom:8px; width:100%; }
+.kitem { display:flex; align-items:flex-start; gap:8px; flex:1; min-width:180px; }
+.kitem .dot { width:10px;height:10px;border-radius:50%;margin-top:4px;flex-shrink:0; }
+.kitem p { font-size:0.8rem; color:#94a3b8; line-height:1.45; }
+.kitem strong { color:#e2e8f0; }
+
+.scenarios { display:flex; gap:8px; justify-content:center; }
+.btn { background:#334155;border:none;color:#cbd5e1;padding:7px 13px;border-radius:8px;cursor:pointer;font-size:0.8rem;transition:background 0.15s; }
+.btn:hover { background:#475569; }
+.back { font-size:0.82rem; color:#38bdf8; text-decoration:none; align-self:flex-start; }
+.back:hover { text-decoration:underline; }
+</style>
+</head>
+<body>
+
+<a href="../index.html" class="back">← All simulations</a>
+<h1>⛰️ The Mountain &amp; Pump System</h1>
+<p class="subtitle">Why a battery is an <em>active pusher</em> — not just a hill</p>
+
+<canvas id="c" width="860" height="420"></canvas>
+
+<div class="controls">
+  <div class="card v-card">
+    <h3>⚡ Pump Power / Voltage (V)</h3>
+    <div class="big" id="vv">6.0</div>
+    <div class="sub">Volts · pump lifts water higher</div>
+    <input type="range" class="vs" id="sv" min="1" max="12" value="6" step="0.5">
+  </div>
+  <div class="card r-card">
+    <h3>🔩 Pipe Width / Resistance (R)</h3>
+    <div class="big" id="rr">3.0</div>
+    <div class="sub">Ohms · narrower pipe = more resistance</div>
+    <input type="range" class="rs" id="sr" min="1" max="12" value="3" step="0.5">
+  </div>
+  <div class="card i-card">
+    <h3>🌊 Flow Rate / Current (I)</h3>
+    <div class="big" id="ii">2.00</div>
+    <div class="sub">Amperes · I = V ÷ R</div>
+  </div>
+  <div class="card p-card">
+    <h3>⚙️ Wheel Power / Power (P)</h3>
+    <div class="big" id="pp">12.0</div>
+    <div class="sub">Watts · P = V × I</div>
+  </div>
+</div>
+
+<div class="scenarios">
+  <button class="btn" onclick="snap(12,2)">🔥 Strong Pump, Wide Pipe</button>
+  <button class="btn" onclick="snap(6,3)">⚖️ Balanced</button>
+  <button class="btn" onclick="snap(3,10)">🐌 Weak Pump, Narrow Pipe</button>
+  <button class="btn" onclick="snap(12,10)">🗻 High V, High R</button>
+</div>
+
+<div class="keybox">
+  <h3>📌 Key Ideas</h3>
+  <div class="kitem">
+    <div class="dot" style="background:#f59e0b"></div>
+    <p><strong>Pump = Battery</strong><br>Actively pushes water (charge) around the loop. It does not rely on gravity — it creates the pressure (voltage) that drives flow.</p>
+  </div>
+  <div class="kitem">
+    <div class="dot" style="background:#60a5fa"></div>
+    <p><strong>Height = Voltage</strong><br>The higher the pump lifts the water, the greater the gravitational PE — just like higher voltage = greater electrical PE.</p>
+  </div>
+  <div class="kitem">
+    <div class="dot" style="background:#34d399"></div>
+    <p><strong>Flow Rate = Current</strong><br>More water passing the wheel per second = more current. Controlled by both pump power and pipe width.</p>
+  </div>
+  <div class="kitem">
+    <div class="dot" style="background:#fb923c"></div>
+    <p><strong>Water Wheel = Resistor / Load</strong><br>Converts the water's PE into useful work (spin). A resistor converts electrical energy into heat &amp; light.</p>
+  </div>
+</div>
+
+<script>
+const cv = document.getElementById('c');
+const cx = cv.getContext('2d');
+let V = 6, Res = 3;
+
+// Layout
+const GND   = 370;   // ground y
+const PumpX = 130;   // pump x
+const WheelX = 700;  // wheel x
+const maxH  = 300;   // max reservoir height above ground
+
+// Reservoir height tracks voltage
+function resY() { return GND - (V / 12) * maxH; }  // top of water surface
+
+// Falling droplets on right side
+const NDROP = 18;
+const drops = Array.from({length: NDROP}, (_, i) => ({
+  y: resY() + i * (GND - resY()) / NDROP,
+  speed: 0
+}));
+
+// Rising bubbles in pump pipe
+const NBUB = 8;
+const bubs = Array.from({length: NBUB}, (_, i) => ({
+  y: GND - 20 - i * (maxH / NBUB),
+  x: PumpX + (Math.random() - 0.5) * 6
+}));
+
+// Wheel angle
+let wheelAngle = 0;
+
+function drawMountain() {
+  // Mountain silhouette (decorative background)
+  cx.save();
+  cx.globalAlpha = 0.12;
+  cx.fillStyle = '#60a5fa';
+  cx.beginPath();
+  cx.moveTo(60, GND);
+  cx.lineTo(380, 40);
+  cx.lineTo(700, GND);
+  cx.closePath();
+  cx.fill();
+  cx.globalAlpha = 1;
+  cx.restore();
+
+  // Ground line
+  cx.save();
+  cx.strokeStyle = '#334155';
+  cx.lineWidth = 2;
+  cx.setLineDash([8, 6]);
+  cx.beginPath();
+  cx.moveTo(40, GND + 22);
+  cx.lineTo(820, GND + 22);
+  cx.stroke();
+  cx.setLineDash([]);
+  cx.restore();
+
+  // Ground label
+  cx.save();
+  cx.fillStyle = '#475569';
+  cx.font = '11px Segoe UI';
+  cx.textAlign = 'left';
+  cx.fillText('⬇ Ground Level (Low PE / 0V)', 50, GND + 38);
+  cx.restore();
+}
+
+function drawPump() {
+  const px = PumpX, py = GND;
+  const vi = V / 12;
+  cx.save();
+
+  // Pump body
+  cx.fillStyle = `rgba(251,191,36,${0.1 + vi * 0.2})`;
+  cx.strokeStyle = '#f59e0b';
+  cx.lineWidth = 2;
+  cx.beginPath();
+  cx.roundRect(px - 28, py - 55, 56, 55, 8);
+  cx.fill(); cx.stroke();
+
+  // Pump label
+  cx.fillStyle = '#fbbf24';
+  cx.font = 'bold 11px Segoe UI';
+  cx.textAlign = 'center';
+  cx.fillText('PUMP', px, py - 38);
+  cx.fillStyle = '#94a3b8';
+  cx.font = '10px Segoe UI';
+  cx.fillText('BATTERY', px, py - 24);
+
+  // Pulsing arrow inside pump
+  const pulse = 0.6 + 0.4 * Math.sin(Date.now() / 180);
+  cx.fillStyle = `rgba(251,191,36,${pulse})`;
+  cx.font = `${14 + vi * 4}px Segoe UI`;
+  cx.fillText('↑', px, py - 8);
+
+  // Voltage label
+  cx.fillStyle = '#fbbf24';
+  cx.font = 'bold 12px Segoe UI';
+  cx.fillText(`${V}V`, px, py + 16);
+
+  cx.restore();
+}
+
+function drawPipes() {
+  const rY = resY();
+  const pipeW = 14;
+
+  cx.save();
+  cx.lineCap = 'round';
+
+  // LEFT pipe: pump → reservoir (going up)
+  cx.strokeStyle = '#334155';
+  cx.lineWidth = pipeW * 2;
+  cx.beginPath(); cx.moveTo(PumpX, GND - 55); cx.lineTo(PumpX, rY); cx.stroke();
+  // water inside
+  const vi = V / 12;
+  cx.strokeStyle = `rgba(251,191,36,${0.3 + vi * 0.5})`;
+  cx.lineWidth = pipeW;
+  cx.beginPath(); cx.moveTo(PumpX, GND - 55); cx.lineTo(PumpX, rY); cx.stroke();
+
+  // TOP pipe: reservoir → right side
+  cx.strokeStyle = '#334155';
+  cx.lineWidth = pipeW * 2;
+  cx.beginPath(); cx.moveTo(PumpX, rY); cx.lineTo(WheelX, rY); cx.stroke();
+  cx.strokeStyle = 'rgba(59,130,246,0.5)';
+  cx.lineWidth = pipeW;
+  cx.beginPath(); cx.moveTo(PumpX, rY); cx.lineTo(WheelX, rY); cx.stroke();
+
+  // RIGHT pipe: falls down (resistance = narrower)
+  const rW = Math.max(3, 10 * (1 - (Res - 1) / 11 * 0.82));
+  cx.strokeStyle = '#334155';
+  cx.lineWidth = pipeW * 2;
+  cx.beginPath(); cx.moveTo(WheelX, rY); cx.lineTo(WheelX, GND - 30); cx.stroke();
+  cx.strokeStyle = 'rgba(167,139,250,0.55)';
+  cx.lineWidth = rW * 2;
+  cx.beginPath(); cx.moveTo(WheelX, rY); cx.lineTo(WheelX, GND - 30); cx.stroke();
+
+  // BOTTOM return pipe: wheel → pump
+  cx.strokeStyle = '#334155';
+  cx.lineWidth = pipeW * 2;
+  cx.beginPath(); cx.moveTo(WheelX, GND + 8); cx.lineTo(PumpX, GND + 8); cx.stroke();
+  cx.strokeStyle = 'rgba(59,130,246,0.3)';
+  cx.lineWidth = pipeW;
+  cx.beginPath(); cx.moveTo(WheelX, GND + 8); cx.lineTo(PumpX, GND + 8); cx.stroke();
+
+  cx.restore();
+}
+
+function drawReservoir() {
+  const rY = resY();
+  const rX = PumpX;
+  const W = 90, waterH = GND - rY;
+
+  cx.save();
+
+  // Reservoir tank outline
+  cx.strokeStyle = '#60a5fa';
+  cx.lineWidth = 2;
+  cx.strokeRect(rX - W / 2, rY, W, waterH * 0.3 + 10);
+
+  // Water fill
+  const fillH = Math.min(waterH * 0.28 + 8, 80);
+  const grad = cx.createLinearGradient(0, rY, 0, rY + fillH);
+  grad.addColorStop(0, 'rgba(59,130,246,0.8)');
+  grad.addColorStop(1, 'rgba(30,64,175,0.6)');
+  cx.fillStyle = grad;
+  cx.fillRect(rX - W / 2 + 2, rY + 2, W - 4, fillH - 2);
+
+  // Height arrow (shows voltage)
+  cx.strokeStyle = '#fbbf24';
+  cx.lineWidth = 1.5;
+  cx.setLineDash([4, 3]);
+  cx.beginPath();
+  cx.moveTo(rX - W / 2 - 22, rY);
+  cx.lineTo(rX - W / 2 - 22, GND + 22);
+  cx.stroke();
+  cx.setLineDash([]);
+
+  // Arrowheads
+  cx.fillStyle = '#fbbf24';
+  cx.beginPath();
+  cx.moveTo(rX - W / 2 - 22, rY);
+  cx.lineTo(rX - W / 2 - 26, rY + 8);
+  cx.lineTo(rX - W / 2 - 18, rY + 8);
+  cx.closePath(); cx.fill();
+
+  // Height label
+  cx.save();
+  cx.translate(rX - W / 2 - 36, (rY + GND) / 2);
+  cx.rotate(-Math.PI / 2);
+  cx.fillStyle = '#fbbf24';
+  cx.font = 'bold 10px Segoe UI';
+  cx.textAlign = 'center';
+  cx.fillText(`Height ∝ Voltage (${V}V)`, 0, 0);
+  cx.restore();
+
+  // Reservoir label
+  cx.fillStyle = '#93c5fd';
+  cx.font = 'bold 11px Segoe UI';
+  cx.textAlign = 'center';
+  cx.fillText('RESERVOIR', rX, rY - 22);
+  cx.fillStyle = '#64748b';
+  cx.font = '10px Segoe UI';
+  cx.fillText('High PE / High Voltage', rX, rY - 8);
+
+  cx.restore();
+}
+
+function drawWaterWheel() {
+  const wx = WheelX, wy = GND - 10;
+  const I = V / Res;
+  const r = 32;
+
+  cx.save();
+  cx.translate(wx, wy - r);
+  cx.rotate(wheelAngle);
+
+  // Wheel rim
+  cx.strokeStyle = '#fb923c';
+  cx.lineWidth = 3;
+  cx.beginPath(); cx.arc(0, 0, r, 0, Math.PI * 2); cx.stroke();
+
+  // Paddles
+  for (let i = 0; i < 6; i++) {
+    const a = (i / 6) * Math.PI * 2;
+    cx.save();
+    cx.rotate(a);
+    cx.fillStyle = '#fb923c';
+    cx.beginPath();
+    cx.roundRect(r - 14, -5, 14, 10, 3);
+    cx.fill();
+    cx.restore();
+  }
+
+  // Hub
+  cx.fillStyle = '#fdba74';
+  cx.beginPath(); cx.arc(0, 0, 6, 0, Math.PI * 2); cx.fill();
+
+  cx.restore();
+
+  // Wheel labels (outside rotation)
+  cx.save();
+  cx.textAlign = 'center';
+  cx.fillStyle = '#fb923c';
+  cx.font = 'bold 11px Segoe UI';
+  cx.fillText('WATER WHEEL', wx, wy - r * 2 - 10);
+  cx.fillStyle = '#64748b';
+  cx.font = '10px Segoe UI';
+  cx.fillText('RESISTOR / LOAD', wx, wy - r * 2 + 4);
+  cx.fillStyle = '#fdba74';
+  cx.font = '10px Segoe UI';
+  cx.fillText(`P = ${(V * V / Res).toFixed(1)}W`, wx, wy + 22);
+  cx.restore();
+}
+
+function drawDroplets() {
+  const rY = resY();
+  const I = V / Res;
+  const sz = Math.min(4 + I * 0.6, 8);
+
+  drops.forEach(d => {
+    cx.save();
+    cx.beginPath();
+    cx.arc(WheelX, d.y, sz, 0, Math.PI * 2);
+    cx.fillStyle = '#60a5fa';
+    cx.shadowColor = '#60a5fa'; cx.shadowBlur = 8;
+    cx.fill();
+    cx.restore();
+  });
+}
+
+function drawBubbles() {
+  const rY = resY();
+  const vi = V / 12;
+
+  bubs.forEach(b => {
+    cx.save();
+    cx.beginPath();
+    cx.arc(b.x, b.y, 4, 0, Math.PI * 2);
+    cx.fillStyle = `rgba(251,191,36,0.6)`;
+    cx.shadowColor = '#fbbf24'; cx.shadowBlur = 6;
+    cx.fill();
+    cx.restore();
+  });
+}
+
+function drawPEArrow() {
+  // PE gradient bar on far right
+  const x = 800, yTop = resY(), yBot = GND;
+  const grad = cx.createLinearGradient(0, yTop, 0, yBot);
+  grad.addColorStop(0, 'rgba(251,191,36,0.8)');
+  grad.addColorStop(1, 'rgba(59,130,246,0.2)');
+
+  cx.save();
+  cx.fillStyle = grad;
+  cx.beginPath();
+  cx.roundRect(x - 10, yTop, 20, yBot - yTop, 4);
+  cx.fill();
+
+  cx.fillStyle = '#fbbf24';
+  cx.font = 'bold 9px Segoe UI';
+  cx.textAlign = 'center';
+  cx.fillText('HIGH PE', x, yTop - 6);
+  cx.fillStyle = '#60a5fa';
+  cx.fillText('LOW PE', x, yBot + 14);
+  cx.restore();
+}
+
+function updateDroplets() {
+  const I = V / Res;
+  const rY = resY();
+  const fallSpeed = 0.8 + I * 1.2;
+
+  drops.forEach(d => {
+    d.y += fallSpeed;
+    if (d.y > GND - 10) d.y = rY + Math.random() * 20;
+  });
+}
+
+function updateBubbles() {
+  const rY = resY();
+  const vi = V / 12;
+  const riseSpeed = 0.5 + vi * 1.5;
+
+  bubs.forEach(b => {
+    b.y -= riseSpeed;
+    if (b.y < rY) {
+      b.y = GND - 20;
+      b.x = PumpX + (Math.random() - 0.5) * 8;
+    }
+  });
+}
+
+function updateWheel() {
+  const I = V / Res;
+  wheelAngle += 0.01 + (I / 12) * 0.06;
+}
+
+function frame() {
+  cx.clearRect(0, 0, cv.width, cv.height);
+
+  drawMountain();
+  drawPipes();
+  drawReservoir();
+  drawPump();
+  updateBubbles(); drawBubbles();
+  updateDroplets(); drawDroplets();
+  updateWheel();   drawWaterWheel();
+  drawPEArrow();
+
+  requestAnimationFrame(frame);
+}
+
+function updateUI() {
+  V   = parseFloat(document.getElementById('sv').value);
+  Res = parseFloat(document.getElementById('sr').value);
+  const I = (V / Res).toFixed(2);
+  const P = (V * V / Res).toFixed(1);
+  document.getElementById('vv').textContent = V.toFixed(1);
+  document.getElementById('rr').textContent = Res.toFixed(1);
+  document.getElementById('ii').textContent = I;
+  document.getElementById('pp').textContent = P;
+}
+
+function snap(v, r) {
+  document.getElementById('sv').value = v;
+  document.getElementById('sr').value = r;
+  V = v; Res = r; updateUI();
+}
+
+document.getElementById('sv').addEventListener('input', updateUI);
+document.getElementById('sr').addEventListener('input', updateUI);
+updateUI();
+requestAnimationFrame(frame);
+</script>
+</body>
+</html>
